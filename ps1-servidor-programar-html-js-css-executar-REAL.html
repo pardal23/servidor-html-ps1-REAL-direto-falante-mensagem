@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Integrado: Web para Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            gap: 20px;
+        }
+
+        /* Div Box de Envio - ESTRUTURA ORIGINAL ADAPTADA APENAS PARA LAYOUT DO EDITOR */
+        .chat-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        h3 { 
+            margin-top: 0; 
+            font-size: 1.2rem; 
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .input-group { 
+            display: flex; 
+            flex-direction: column; /* Alterado para empilhar o editor e o botão verticalmente */
+            gap: 10px; 
+            margin-top: 15px;
+        }
+
+        /* Substituído o estilo do input[type="text"] por este textarea */
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #38bdf8;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: 'Consolas', monospace;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background-color: #7dd3fc; 
+        }
+
+        .status { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            margin-top: 12px; 
+            font-style: italic;
+        }
+
+        /* Caixa Utilitária do PowerShell */
+        .setup-box {
+            background-color: #0f172a;
+            border: 1px dashed #38bdf8;
+            border-radius: 8px;
+            width: 380px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .setup-box p {
+            margin: 0 0 10px 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .btn-copy {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .btn-copy:hover {
+            background-color: #34d399;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Instruções rápidas integradas -->
+    <div class="setup-box">
+        <p>1º Clica abaixo para copiar o Servidor Avançado:</p>
+        <button class="btn-copy" onclick="copiarServidor()">Copiar Código do Servidor</button>
+        <p style="margin-top: 10px; margin-bottom: 0;">2º Cola e executa no teu PowerShell do Windows.</p>
+    </div>
+
+    <!-- A Div Box Principal (Estrutura original preservada) -->
+    <div class="chat-box">
+        <h3>Enviar Programação para o PC</h3>
+        <div class="input-group">
+            <!-- Transformado em textarea para aceitar blocos de código com tags complexas -->
+            <textarea id="msgInput" placeholder="Escreve HTML, CSS, JS, insere <img> ou <video>..."></textarea>
+            <button onclick="enviarParaPC()">Executar no Servidor</button>
+        </div>
+        <div class="status" id="statusMessage">Aguardando envio de código...</div>
+    </div>
+
+    <script>
+        // Injeta um exemplo louco inicial para testares logo após iniciar
+        document.getElementById('msgInput').value = 
+`<div style="padding:15px; text-align:center; font-family:Segoe UI;">
+  <h2 style="color:#38bdf8; margin:0 0 10px 0;">Código Executado! 🎉</h2>
+  <img src="https://picsum.photos" style="border-radius:8px; width:100%; border:1px solid #334155;">
+  <p style="color:#64748b; font-size:13px;">Vídeos, áudios e scripts rodam aqui vivos.</p>
+  <button onclick="alert('JS Ativo!')" style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Testar Alerta</button>
+</div>`;
+
+        // Função para enviar os dados via HTTP POST para o Windows
+        function enviarParaPC() {
+            const input = document.getElementById('msgInput');
+            const status = document.getElementById('statusMessage');
+            const mensagem = input.value;
+
+            if (!mensagem.trim()) return;
+
+            status.innerText = "A renderizar no painel do servidor...";
+            status.style.color = "#94a3b8";
+
+            fetch('http://localhost:8080/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+                body: mensagem
+            })
+            .then(() => {
+                status.innerText = "Código processado e atualizado no painel Windows!";
+                status.style.color = "#4caf50";
+            })
+            .catch(err => {
+                status.innerText = "Erro: Certifica-te de que o PowerShell está a correr.";
+                status.style.color = "#ef4444";
+            });
+        }
+
+        // Script do PowerShell otimizado para abrir um formulário nativo do Windows (.NET)
+        // Ele cria uma janela nativa com uma barra de título escura e um WebBrowser atualizado
+        function copiarServidor() {
+            const codigoPowerShell = `$listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add("http://localhost:8080/"); $listener.Start(); Clear-Host; Write-Host "Servidor Web-to-Windows Rodando na porta 8080!" -ForegroundColor Cyan; Add-Type -AssemblyName System.Windows.Forms, System.Drawing; $form = New-Object System.Windows.Forms.Form; $form.Text = "🖥️ Painel Servidor Windows - Execução Real"; $form.Size = New-Object System.Drawing.Size(500,550); $form.StartPosition = "CenterScreen"; $form.BackColor = [System.Drawing.Color]::FromArgb(24,24,27); $wb = New-Object System.Windows.Forms.WebBrowser; $wb.Dock = "Fill"; $form.Controls.Add($wb); $form.Show(); $form.Add_FormClosing({ $listener.Stop(); [System.Windows.Forms.Application]::Exit() }); [async]::RunSynchronously({ while ($listener.IsListening) { try { $context = $listener.GetContext(); $req = $context.Request; $res = $context.Response; $res.Headers.Add("Access-Control-Allow-Origin", "*"); $res.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS"); $res.Headers.Add("Access-Control-Allow-Headers", "Content-Type"); if ($req.HttpMethod -eq "OPTIONS") { $res.StatusCode = 200; $res.Close(); continue }; if ($req.HttpMethod -eq "POST") { $reader = New-Object System.IO.StreamReader($req.InputStream, [System.Text.Encoding]::UTF8); $msg = $reader.ReadToEnd(); Write-Host "[Código Injetado com Sucesso]" -ForegroundColor Green; $form.Invoke([Action] { $wb.DocumentText = "<meta http-equiv='X-UA-Compatible' content='IE=edge'/>" + $msg }); $buf = [System.Text.Encoding]::UTF8.GetBytes("OK"); $res.ContentLength64 = $buf.Length; $res.OutputStream.Write($buf, 0, $buf.Length) }; $res.Close() } catch {} } }); [System.Windows.Forms.Application]::Run($form);`;
+            
+            navigator.clipboard.writeText(codigoPowerShell).then(() => {
+                alert("Código do servidor atualizado e copiado! Cola-o no teu PowerShell.");
+            });
+        }
+    </script>
+</body>
+</html>
