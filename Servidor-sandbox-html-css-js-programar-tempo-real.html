@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Integrado: Web para Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: row; /* Alinhado lado a lado para um aspeto de Workspace */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            gap: 40px;
+        }
+
+        /* Divs Organizadoras do Painel Esquerdo */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Div Box de Envio - ESTRUTURA ORIGINAL ADAPTADA APENAS PARA EXPANDIR O EDITOR */
+        .chat-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        /* NOVA DIV BOX DE UTILIDADE (XCOPY) */
+        .xcopy-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #10b981; /* Borda verde destacada */
+        }
+
+        .xcopy-box h3 {
+            color: #10b981;
+            border-bottom: 1px solid #334155;
+        }
+
+        h3 { 
+            margin-top: 0; 
+            font-size: 1.2rem; 
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .input-group { 
+            display: flex; 
+            flex-direction: column; /* Organização vertical para suportar o editor */
+            gap: 12px; 
+            margin-top: 15px;
+        }
+
+        /* O input de texto foi evoluído para esta Textarea de programação */
+        textarea {
+            width: 100%;
+            height: 220px;
+            padding: 12px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #38bdf8;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: 'Consolas', monospace;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background-color: #7dd3fc; 
+        }
+
+        /* Estilo customizado do botão XCOPY */
+        .btn-xcopy {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+        .btn-xcopy:hover {
+            background-color: #34d399;
+        }
+
+        .status { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            margin-top: 12px; 
+            font-style: italic;
+        }
+
+        /* PAINEL FLUTUANTE ESTILO WINDOWS 11 */
+        .windows-panel {
+            width: 550px;
+            height: 600px;
+            background-color: #1e1e24;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        /* Barra de título do Sistema Windows */
+        .win-titlebar {
+            background-color: #18181b;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #27272a;
+            user-select: none;
+        }
+
+        .win-title {
+            font-size: 0.85rem;
+            color: #e4e4e7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .win-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .dot-close { background-color: #ef4444; }
+        .dot-min { background-color: #eab308; }
+        .dot-max { background-color: #22c55e; }
+
+        /* Monitor do Servidor Interno */
+        .server-viewport {
+            flex: 1;
+            background-color: #ffffff;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Coluna de Controle à Esquerda -->
+    <div class="sidebar">
+        <!-- DIV BOX PRINCIPAL -->
+        <div class="chat-box">
+            <h3>Enviar Programação para o PC</h3>
+            <div class="input-group">
+                <textarea id="msgInput" placeholder="Escreve o código... [Pressione Enter ou Z fora de texto para rodar]"></textarea>
+                <button onclick="enviarParaPC()">Executar no Servidor</button>
+            </div>
+            <div class="status" id="statusMessage">Aguardando envio de código...</div>
+        </div>
+
+        <!-- DIV BOX UTILIÁRIA: SISTEMA XCOPY DE BACKUP -->
+        <div class="xcopy-box">
+            <h3>XCOPY: Guardar Ficheiro local</h3>
+            <div class="input-group">
+                <input type="text" id="fileNameInput" placeholder="nome_do_ficheiro" style="padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; margin-bottom: 5px; outline: none;" value="meu_codigo">
+                <button class="btn-xcopy" onclick="xcopySalvarFicheiro()">XCOPY /S (Guardar no PC)</button>
+            </div>
+            <div class="status" id="xcopyStatus" style="color: #a7f3d0;">Pronto para exportar.</div>
+        </div>
+    </div>
+
+    <!-- O PAINEL WINDOWS INTEGRADO NA WEB -->
+    <div class="windows-panel" id="winPanel">
+        <div class="win-titlebar">
+            <div class="win-title">🖥️ Servidor Local - Sandbox de Execução</div>
+            <div class="win-controls">
+                <span class="win-dot dot-min" onclick="document.getElementById('winPanel').style.opacity = '0.5'"></span>
+                <span class="win-dot dot-max" onclick="document.getElementById('winPanel').style.opacity = '1'"></span>
+                <span class="win-dot dot-close" onclick="limparPainel()"></span>
+            </div>
+        </div>
+        <iframe id="serverViewport" class="server-viewport"></iframe>
+    </div>
+  <script>
+        // Carrega um exemplo interativo inicial
+        document.getElementById('msgInput').value = 
+`<div style="padding: 24px; text-align: center; font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #fff; min-height: 100vh; box-sizing: border-box; margin: 0;">
+  <h2 style="color: #38bdf8; margin-top: 0; font-size: 24px;">Servidor Online! 🚀</h2>
+  <p style="color: #94a3b8; font-size: 14px;">Vídeos, Imagens, Layouts e Scripts rodam aqui sem restrições.</p>
+  
+  <img src="https://media1.tenor.com/m/OuiTmzt-BnoAAAAd/near-dead-the-soul-is-leaving-the-body.gif" style="border-radius: 10px; width: 100%; max-width: 380px; margin: 15px 0; border: 1px solid #334155; box-shadow: 0 10px 15px rgba(0,0,0,0.5);">
+  
+  <br>
+  <button onclick="document.getElementById('live-text').innerText = '🔥 O JavaScript executou com sucesso dentro do Painel!'" style="background: #10b981; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; transition: 0.2s;">
+    Disparar Ação JS
+  </button>
+  <p id="live-text" style="color: #34d399; font-size: 13px; margin-top: 15px; font-weight: 500;"></p>
+</div>`;
+
+        // Ativação por teclas (Enter ou Z)
+        document.getElementById('msgInput').addEventListener('keydown', function(e) {
+            // Se pressionar 'Enter' sem a tecla Shift (para permitir pular linhas) ou se pressionar a tecla 'z'/'Z'
+            if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'z' || e.key === 'Z') {
+                e.preventDefault(); // Evita que a letra ou quebra de linha normal seja injetada
+                enviarParaPC();
+            }
+        });
+
+        // Executa a injeção de código direto no painel simulado
+        function enviarParaPC() {
+            const input = document.getElementById('msgInput');
+            const status = document.getElementById('statusMessage');
+            const iframe = document.getElementById('serverViewport');
+            const codigo = input.value;
+
+            if (!codigo.trim()) return;
+
+            status.innerText = "A compilar e renderizar no painel...";
+            status.style.color = "#94a3b8";
+
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write(codigo);
+                iframeDoc.close();
+
+                status.innerText = "Código atualizado com sucesso no Painel Windows!";
+                status.style.color = "#4caf50";
+            } catch (err) {
+                status.innerText = "Erro ao renderizar o código inserido.";
+                status.style.color = "#ef4444";
+            }
+        }
+
+        // SISTEMA XCOPY (Guarda o arquivo .html direto no PC)
+        function xcopySalvarFicheiro() {
+            const codigo = document.getElementById('msgInput').value;
+            let nomeFicheiro = document.getElementById('fileNameInput').value.trim();
+            const xcopyStatus = document.getElementById('xcopyStatus');
+
+            if (!codigo.trim()) {
+                xcopyStatus.innerText = "Erro: O editor está vazio!";
+                xcopyStatus.style.color = "#ef4444";
+                return;
+            }
+
+            if (!nomeFicheiro) {
+                nomeFicheiro = "codigo_xcopy";
+            }
+
+            try {
+                const blob = new Blob([codigo], { type: "text/html;charset=utf-8" });
+                const link = document.createElement("a");
+                
+                link.href = URL.createObjectURL(blob);
+                link.download = nomeFicheiro.endsWith(".html") ? nomeFicheiro : nomeFicheiro + ".html";
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                xcopyStatus.innerText = `Ficheiro "${link.download}" guardado via XCOPY!`;
+                xcopyStatus.style.color = "#34d399";
+            } catch (err) {
+                xcopyStatus.innerText = "Erro ao efetuar backup local.";
+                xcopyStatus.style.color = "#ef4444";
+            }
+        }
+
+        // Função para limpar o painel
+        function limparPainel() {
+            const iframe = document.getElementById('serverViewport');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write('<body style="background:#1e1e24; color:#64748b; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;"><h3>Painel Limpo. Envie novo código...</h3></body>');
+            iframeDoc.close();
+            document.getElementById('statusMessage').innerText = "Painel redefinido.";
+            document.getElementById('statusMessage').style.color = "#94a3b8";
+        }
+
+        // Executa automaticamente o exemplo ao iniciar a página
+        window.onload = function() {
+            enviarParaPC();
+        };
+    </script>
+</body>
+</html>
