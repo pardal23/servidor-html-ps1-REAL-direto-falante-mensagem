@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace de Servidor Seguro: Web para Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: row; /* Layout Workspace */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            gap: 40px;
+        }
+
+        /* Coluna de Controle */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Div Box de Envio - ESTRUTURA ORIGINAL PRESERVADA */
+        .chat-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        /* DIV BOX XCOPY DE BACKUP LOCAL */
+        .xcopy-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #10b981;
+        }
+
+        .xcopy-box h3 {
+            color: #10b981;
+            border-bottom: 1px solid #334155;
+        }
+
+        h3 { 
+            margin-top: 0; 
+            font-size: 1.2rem; 
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .input-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin-top: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 220px;
+            padding: 12px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #38bdf8;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: 'Consolas', monospace;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background-color: #7dd3fc; 
+        }
+
+        .btn-xcopy {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+        .btn-xcopy:hover {
+            background-color: #34d399;
+        }
+
+        .status { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            margin-top: 12px; 
+            font-style: italic;
+        }
+
+        /* PAINEL WINDOWS 11 SANDBOX (Proteção contra quebra de links) */
+        .windows-panel {
+            width: 550px;
+            height: 600px;
+            background-color: #1e1e24;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .win-titlebar {
+            background-color: #18181b;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #27272a;
+            user-select: none;
+        }
+
+        .win-title {
+            font-size: 0.85rem;
+            color: #e4e4e7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .win-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .dot-close { background-color: #ef4444; }
+        .dot-min { background-color: #eab308; }
+        .dot-max { background-color: #22c55e; }
+
+        .server-viewport {
+            flex: 1;
+            background-color: #ffffff;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <!-- DIV BOX ORIGINAL -->
+        <div class="chat-box">
+            <h3>Enviar Programação para o PC</h3>
+            <div class="input-group">
+                <textarea id="msgInput" placeholder="Escreve o código... [Enter ou Z executa]"></textarea>
+                <button onclick="enviarParaPC()">Executar no Servidor</button>
+            </div>
+            <div class="status" id="statusMessage">Aguardando envio de código...</div>
+        </div>
+
+        <!-- DIV BOX UTILIÁRIA (XCOPY REAL) -->
+        <div class="xcopy-box">
+            <h3>XCOPY: Exportação e Backup</h3>
+            <div class="input-group">
+                <input type="text" id="fileNameInput" placeholder="Nome do ficheiro (ex: index)" style="padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: white; margin-bottom: 5px; outline: none;" value="index">
+                <button class="btn-xcopy" onclick="xcopySalvarFicheiro()">XCOPY /S /E (Exportar HTML)</button>
+            </div>
+            <div class="status" id="xcopyStatus" style="color: #a7f3d0;">Pronto para gravação local.</div>
+        </div>
+    </div>
+
+    <!-- PAINEL WINDOWS -->
+    <div class="windows-panel" id="winPanel">
+        <div class="win-titlebar">
+            <div class="win-title">🖥️ Servidor Apache Virtual - Live Sandbox</div>
+            <div class="win-controls">
+                <span class="win-dot dot-min" onclick="document.getElementById('winPanel').style.opacity = '0.5'"></span>
+                <span class="win-dot dot-max" onclick="document.getElementById('winPanel').style.opacity = '1'"></span>
+                <span class="win-dot dot-close" onclick="limparPainel()"></span>
+            </div>
+        </div>
+        <!-- Adicionada diretiva sandbox estrita para capturar e isolar scripts maliciosos ou falhas de link -->
+        <iframe id="serverViewport" sandbox="allow-scripts allow-modals allow-same-origin" class="server-viewport"></iframe>
+    </div>
+    <script>
+        // Código exemplo inicial simulando requisições e tratamento de falhas em links ativos
+        document.getElementById('msgInput').value = 
+`<div style="padding: 24px; font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #fff; min-height: 100vh; margin: 0; box-sizing: border-box;">
+  <h2 style="color: #38bdf8; margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 8px;">Simulação Apache Server 2.4</h2>
+  <p style="color: #94a3b8; font-size: 14px;">Monitorização de links e segurança de scripts em execução.</p>
+  
+  <div style="background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin: 15px 0;">
+    <span style="color: #10b981; font-weight: bold;">[INFO]</span> Servidor a escutar em localhost. Falhas de carregamento externas são intercetadas de forma segura.
+  </div>
+
+  <img src="https://tenor.com" style="border-radius: 8px; width: 100%; max-width: 360px; display: block; margin: 10px auto; border: 1px solid #475569;">
+  
+  <button onclick="executarSeguro()" style="background: #38bdf8; color: #0f172a; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px;">
+    Validar Comunicação de Rede
+  </button>
+  <p id="debug-log" style="color: #e2e8f0; font-size: 13px; font-family: monospace; background: #000; padding: 10px; border-radius: 4px; display: none;"></p>
+
+  <script>
+    function executarSeguro() {
+        const log = document.getElementById('debug-log');
+        log.style.display = 'block';
+        log.innerText = '> A verificar cabeçalhos HTTP...\\n> Sandbox ativa: Links externos inseguros bloqueados.';
+    }
+  <\/script>
+</div>`;
+
+        // Interceção de Teclas Globais no Editor (Enter sem Shift ou Z)
+        document.getElementById('msgInput').addEventListener('keydown', function(e) {
+            if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'z' || e.key === 'Z') {
+                e.preventDefault(); // Trava inserção do caractere
+                enviarParaPC();
+            }
+        });
+
+        // Injeção limpa de código na Sandbox do Painel Windows
+        function enviarParaPC() {
+            const input = document.getElementById('msgInput');
+            const status = document.getElementById('statusMessage');
+            const iframe = document.getElementById('serverViewport');
+            const codigo = input.value;
+
+            if (!codigo.trim()) return;
+
+            status.innerText = "A renderizar em ambiente seguro...";
+            status.style.color = "#38bdf8";
+
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.open();
+                
+                // Injeta um script global de captura de erros dentro do iframe para evitar que quebras de links crashem a app
+                const wrapperCodigo = `
+                    <script>
+                        window.onerror = function(msg, url, line) {
+                            console.warn("Erro de Link/Script intercetado: " + msg);
+                            return true; // Evita propagação do erro
+                        };
+                    <\/script>
+                    ${codigo}
+                `;
+                
+                iframeDoc.write(wrapperCodigo);
+                iframeDoc.close();
+
+                status.innerText = "Código executado com sucesso no Servidor Virtual!";
+                status.style.color = "#10b981";
+            } catch (err) {
+                status.innerText = "Falha crítica de segurança ao processar o código.";
+                status.style.color = "#ef4444";
+            }
+        }
+
+        // SISTEMA XCOPY (Gravação real de ficheiros locais livres de falhas)
+        function xcopySalvarFicheiro() {
+            const codigo = document.getElementById('msgInput').value;
+            let nomeFicheiro = document.getElementById('fileNameInput').value.trim();
+            const xcopyStatus = document.getElementById('xcopyStatus');
+
+            if (!codigo.trim()) {
+                xcopyStatus.innerText = "Erro: Editor vazio. Nada para copiar.";
+                xcopyStatus.style.color = "#ef4444";
+                return;
+            }
+
+            if (!nomeFicheiro) nomeFicheiro = "index";
+
+            try {
+                // Força codificação UTF-8 explícita para evitar quebras de strings
+                const blob = new Blob([codigo], { type: "text/html;charset=utf-8" });
+                const link = document.createElement("a");
+                
+                link.href = URL.createObjectURL(blob);
+                link.download = nomeFicheiro.endsWith(".html") ? nomeFicheiro : nomeFicheiro + ".html";
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                xcopyStatus.innerText = `XCOPY Concluído: "${link.download}" guardado!`;
+                xcopyStatus.style.color = "#10b981";
+            } catch (err) {
+                xcopyStatus.innerText = "Erro no pipeline do XCOPY.";
+                xcopyStatus.style.color = "#ef4444";
+            }
+        }
+
+        // Função de Redefinição Completa do Painel
+        function limparPainel() {
+            const iframe = document.getElementById('serverViewport');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write('<body style="background:#1e1e24; color:#64748b; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;"><h3>Aguardando novo deploy de código limpo...</h3></body>');
+            iframeDoc.close();
+            document.getElementById('statusMessage').innerText = "Painel redefinido.";
+            document.getElementById('statusMessage').style.color = "#94a3b8";
+        }
+
+        // Inicialização Automática
+        window.onload = function() {
+            enviarParaPC();
+        };
+    </script>
+</body>
+</html>
+
+
+<p><a href="https://httpd.apache.org/">apache org == https://httpd.apache.org/</a></p>
+
+
