@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Integrado: Web para Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            gap: 20px;
+        }
+
+        /* Div Box de Envio */
+        .chat-box {
+            background-color: #1e293b;
+            border-radius: 12px;
+            width: 380px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        h3 { 
+            margin-top: 0; 
+            font-size: 1.2rem; 
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .input-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #475569;
+            background-color: #0f172a;
+            color: #fff;
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        button:hover { 
+            background-color: #7dd3fc; 
+        }
+
+        .status { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            margin-top: 12px; 
+            font-style: italic;
+        }
+
+        /* Caixa Utilitária do PowerShell */
+        .setup-box {
+            background-color: #0f172a;
+            border: 1px dashed #38bdf8;
+            border-radius: 8px;
+            width: 380px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .setup-box p {
+            margin: 0 0 10px 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .btn-copy {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .btn-copy:hover {
+            background-color: #34d399;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Instruções rápidas integradas -->
+    <div class="setup-box">
+        <p>1º Clica abaixo para copiar o Servidor Windows:</p>
+        <button class="btn-copy" onclick="copiarServidor()">Copiar Código do Servidor</button>
+        <p style="margin-top: 10px; margin-bottom: 0;">2º Cola e executa no teu PowerShell do Windows.</p>
+    </div>
+
+    <!-- A Div Box Principal -->
+    <div class="chat-box">
+        <h3>Enviar Mensagem para o PC</h3>
+        <div class="input-group">
+            <input type="text" id="msgInput" placeholder="Escreve e ouve o PC falar...">
+            <button onclick="enviarParaPC()">Enviar</button>
+        </div>
+        <div class="status" id="statusMessage">Aguardando envio...</div>
+    </div>
+
+    <script>
+        // Função para enviar os dados via HTTP POST para o Windows
+        function enviarParaPC() {
+            const input = document.getElementById('msgInput');
+            const status = document.getElementById('statusMessage');
+            const mensagem = input.value;
+
+            if (!mensagem.trim()) return;
+
+            status.innerText = "A processar comunicação...";
+            status.style.color = "#94a3b8";
+
+            fetch('http://localhost:8080/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+                body: mensagem
+            })
+            .then(() => {
+                status.innerText = "Mensagem processada e falada pelo PC!";
+                status.style.color = "#4caf50";
+                input.value = "";
+            })
+            .catch(err => {
+                status.innerText = "Erro: Certifica-te de que o PowerShell está a correr.";
+                status.style.color = "#ef4444";
+            });
+        }
+
+        // Permite disparar com o Enter
+        document.getElementById('msgInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') enviarParaPC();
+        });
+
+        // O código do servidor Windows compactado pronto para ser colado no PowerShell
+        function copiarServidor() {
+            const codigoPowerShell = `$listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add("http://localhost:8080/"); $listener.Start(); Clear-Host; Write-Host "Servidor ativo no Windows! Aguardando envio da Div Box..." -ForegroundColor Cyan; $synth = New-Object -ComObject Talker.BasicVoice -ErrorAction SilentlyContinue; if (!$synth) { Add-Type -AssemblyName System.Speech; $synth = New-Object System.Speech.Synthesis.SpeechSynthesizer }; try { while ($listener.IsListening) { $context = $listener.GetContext(); $req = $context.Request; $res = $context.Response; $res.Headers.Add("Access-Control-Allow-Origin", "*"); $res.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS"); $res.Headers.Add("Access-Control-Allow-Headers", "Content-Type"); if ($req.HttpMethod -eq "OPTIONS") { $res.StatusCode = 200; $res.Close(); continue }; if ($req.HttpMethod -eq "POST") { $reader = New-Object System.IO.StreamReader($req.InputStream, [System.Text.Encoding]::UTF8); $msg = $reader.ReadToEnd(); Write-Host "[Mensagem Recebida]: $msg" -ForegroundColor Green; $logPath = "$env:USERPROFILE\\Desktop\\historico.txt"; "[$(Get-Date -Format 'dd/MM/yyyy HH:mm:ss')] $msg" | Out-File -FilePath $logPath -Append -Encoding utf8; try { $synth.Speak($msg) } catch {}; $buf = [System.Text.Encoding]::UTF8.GetBytes("OK"); $res.ContentLength64 = $buf.Length; $res.OutputStream.Write($buf, 0, $buf.Length) }; $res.Close() } } finally { $listener.Stop() }`;
+            
+            navigator.clipboard.writeText(codigoPowerShell).then(() => {
+                alert("Código do servidor copiado! Agora abre o PowerShell e faz Ctrl+V (ou clica com botão direito) para o correr.");
+            });
+        }
+    </script>
+</body>
+</html>
