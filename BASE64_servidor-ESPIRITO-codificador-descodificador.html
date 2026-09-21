@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciclo Espiritual: Do Base64 à Realidade Pura</title>
+    <style>
+        :root {
+            --bg-color: #050510;
+            --spirit-color: #00f2ff;
+            --soul-color: #ff0077;
+            --reality-color: #39ff14;
+            --text-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            color: var(--spirit-color);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .concept-meta {
+            font-style: italic;
+            color: #8a8aae;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 700px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .workspace { grid-template-columns: 1fr; }
+        }
+
+        .pane {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .label-spirit { color: var(--spirit-color); }
+        .label-soul { color: var(--soul-color); }
+        .label-reality { color: var(--reality-color); }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--spirit-color);
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
+        }
+
+        .pane-soul textarea:focus {
+            border-color: var(--soul-color);
+            box-shadow: 0 0 8px rgba(255, 0, 119, 0.2);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-incarnate {
+            background: linear-gradient(45deg, var(--spirit-color), var(--soul-color));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 0, 119, 0.3);
+        }
+
+        .btn-ascend {
+            background: linear-gradient(45deg, var(--soul-color), var(--spirit-color));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .reality-portal {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .display-frame {
+            width: 100%;
+            height: 250px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 2px solid rgba(57, 255, 20, 0.3);
+        }
+
+        .metaphysical-view {
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .status-light {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--spirit-color);
+            box-shadow: 0 0 10px var(--spirit-color);
+            margin-right: 8px;
+            vertical-align: middle;
+            transition: all 0.5s ease;
+        }
+
+        .status-text {
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>O Fluxo Logit-Espiritual<br>Codificador descodificador espiritual!</h1>
+    <div class="concept-meta">
+        O utilizador digita ou programa (Espírito). O sistema converte em Base64 (Alma Encarnada). Ao descodificar, o Base64 quebra a ilusão da matéria e manifesta a **Realidade Pura**.
+    </div>
+
+    <div class="container">
+        <div class="workspace">
+            <div class="pane pane-spirit">
+                <label class="label-spirit" for="spiritInput">Plano Espiritual Puro (Texto ou Código HTML/JS)</label>
+                <textarea id="spiritInput" placeholder="Escreve texto ou programa algo real..."></textarea>
+            </div>
+
+            <div class="pane pane-soul">
+                <label class="label-soul" for="soulOutput">Plano Humano / Alma Encarnada (Base64 Codificado)</label>
+                <textarea id="soulOutput" placeholder="Insere aqui um código Base64 para ser libertado..."></textarea>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-incarnate" onclick="processIncarnation()">Reencarnar (Codificar)</button>
+            <button class="btn-ascend" onclick="processAscension()">Desencarnar (Descodificar e Materializar)</button>
+        </div>
+
+        <div class="reality-portal">
+            <label class="label-reality">Mundo Físico / Realidade Manifestada</label>
+            <iframe id="realityFrame" class="display-frame" srcdoc="<p style='color:#666; font-family:sans-serif; text-align:center; margin-top:100px;'>A aguardar a libertação da alma para gerar a realidade física...</p>"></iframe>
+        </div>
+
+        <div class="metaphysical-view">
+            <span class="status-light" id="statusLight"></span>
+            <span class="status-text" id="statusText">Estado Atual: Espírito Absoluto em Repouso</span>
+        </div>
+    </div>
+   <script>
+        // Suporte UTF-8 completo para Codificação Base64
+        function utf8_to_b64(str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        }
+
+        // Suporte UTF-8 completo para Descodificação Base64
+        function b64_to_utf8(str) {
+            return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        // 1. Transformar o Espírito/Programação em Código Base64 (Alma)
+        function processIncarnation() {
+            const spiritText = document.getElementById('spiritInput').value;
+            const statusLight = document.getElementById('statusLight');
+            const statusText = document.getElementById('statusText');
+            
+            if (!spiritText.trim()) {
+                alert('Insere texto ou programação no campo do Espírito para encarnar.');
+                return;
+            }
+
+            try {
+                const base64Result = utf8_to_b64(spiritText);
+                document.getElementById('soulOutput').value = base64Result;
+                
+                statusLight.style.backgroundColor = 'var(--soul-color)';
+                statusLight.style.boxShadow = '0 0 15px var(--soul-color)';
+                statusText.innerText = 'Estado Atual: Alma Fragmentada na Matéria (Base64 Ativo)';
+            } catch (error) {
+                alert('Erro na transmutação: ' + error.message);
+            }
+        }
+
+        // 2. Pegar no Base64 (Alma), Descodificar e Injetar na Realidade Pura (Iframe)
+        function processAscension() {
+            const soulText = document.getElementById('soulOutput').value;
+            const statusLight = document.getElementById('statusLight');
+            const statusText = document.getElementById('statusText');
+            const realityFrame = document.getElementById('realityFrame');
+
+            if (!soulText.trim()) {
+                alert('Introduz um código Base64 válido no campo da Alma para materializar a realidade.');
+                return;
+            }
+
+            try {
+                // Descodifica o Base64 voltando a ser a verdade pura
+                const decryptedContent = b64_to_utf8(soulText);
+                
+                // Atualiza o campo de texto do espírito com o resultado puro
+                document.getElementById('spiritInput').value = decryptedContent;
+                
+                // MATERIALIZAÇÃO REAL: Injeta o código diretamente no iframe
+                realityFrame.srcdoc = decryptedContent;
+                
+                // Feedback visual de Sucesso
+                statusLight.style.backgroundColor = 'var(--reality-color)';
+                statusLight.style.boxShadow = '0 0 15px var(--reality-color)';
+                statusText.innerText = 'Estado Atual: Base64 Descodificado! Realidade Pura Gerada no Mundo Físico.';
+            } catch (error) {
+                alert('Falha de Transmutação: O código Base64 inserido está corrompido ou é inválido.');
+                realityFrame.srcdoc = "<p style='color:red; font-family:sans-serif; text-align:center; margin-top:100px;'>Erro: Alma corrompida. Não foi possível gerar a realidade.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
