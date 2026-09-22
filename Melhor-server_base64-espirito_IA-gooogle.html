@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciclo Espiritual: Do Base64 à Realidade Pura</title>
+    <style>
+        :root {
+            --bg-color: #050510;
+            --spirit-color: #00f2ff;
+            --soul-color: #ff0077;
+            --reality-color: #39ff14;
+            --text-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            color: var(--spirit-color);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .concept-meta {
+            font-style: italic;
+            color: #8a8aae;
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 700px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .workspace { grid-template-columns: 1fr; }
+        }
+
+        .pane {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .label-spirit { color: var(--spirit-color); }
+        .label-soul { color: var(--soul-color); }
+        .label-reality { color: var(--reality-color); }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--spirit-color);
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
+        }
+
+        .pane-soul textarea:focus {
+            border-color: var(--soul-color);
+            box-shadow: 0 0 8px rgba(255, 0, 119, 0.2);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-incarnate {
+            background: linear-gradient(45deg, var(--spirit-color), var(--soul-color));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 0, 119, 0.3);
+        }
+
+        .btn-ascend {
+            background: linear-gradient(45deg, var(--soul-color), var(--spirit-color));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .reality-portal {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Estilo da nova janela de monitorização GUI virtual integrada */
+        .gui-monitor-panel {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            border: 2px solid rgba(57, 255, 20, 0.3);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .gui-status-active {
+            color: var(--reality-color);
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
+        }
+
+        .metaphysical-view {
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .status-light {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--spirit-color);
+            box-shadow: 0 0 10px var(--spirit-color);
+            margin-right: 8px;
+            vertical-align: middle;
+            transition: all 0.5s ease;
+        }
+
+        .status-text {
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .parent-link-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .parent-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .parent-input:focus {
+            outline: none;
+            border-color: var(--spirit-color);
+            box-shadow: 0 0 8px rgba(0, 242, 255, 0.3);
+        }
+
+        .parent-status {
+            font-size: 0.85rem;
+            color: #8a8aae;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>O Fluxo Logit-Espiritual<br>Codificador descodificador espiritual!</h1>
+    <div class="concept-meta">
+        O utilizador digita ou programa (Espírito). O sistema converte em Base64 (Alma Encarnada). Ao descodificar, o Base64 quebra a ilusão da matéria e manifesta a **Realidade Pura**.
+    </div>
+   <div class="container">
+        
+        <!-- Entrada para o Link Pai (Abre a janela GUI independente através do Enter) -->
+        <div class="parent-link-container">
+            <label class="label-spirit" for="parentLinkInput">Conexão do Link Pai (Pressione Enter para abrir Janela GUI)</label>
+            <input type="url" id="parentLinkInput" class="parent-input" placeholder="Insira a URL real do site pai (ex: https://exemplo.com) e carregue em Enter...">
+            <div id="parentStatusText" class="parent-status">Estado da Conexão: Portal livre da influência externa</div>
+        </div>
+
+        <div class="workspace">
+            <div class="pane pane-spirit">
+                <label class="label-spirit" for="spiritInput">Plano Espiritual Puro (Texto ou Código HTML/JS)</label>
+                <textarea id="spiritInput" placeholder="Escreve texto ou programa algo real..."></textarea>
+            </div>
+
+            <div class="pane pane-soul">
+                <label class="label-soul" for="soulOutput">Plano Humano / Alma Encarnada (Base64 Codificado)</label>
+                <textarea id="soulOutput" placeholder="Insere aqui um código Base64 para ser libertado..."></textarea>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-incarnate" onclick="processIncarnation()">Reencarnar (Codificar)</button>
+            <button class="btn-ascend" onclick="processAscension()">Desencarnar (Descodificar e Materializar)</button>
+        </div>
+
+        <div class="reality-portal">
+            <label class="label-reality">Mundo Físico / Monitorização da Janela Real GUI</label>
+            <!-- Substituído o iframe por um painel de controlo da Janela GUI ativa -->
+            <div class="gui-monitor-panel" id="guiPortalView">
+                <p style="color:#666; margin: 0;">A aguardar a inicialização de uma Janela GUI Real ou materialização Base64...</p>
+            </div>
+        </div>
+
+        <div class="metaphysical-view">
+            <span class="status-light" id="statusLight"></span>
+            <span class="status-text" id="statusText">Estado Atual: Espírito Absoluto em Repouso</span>
+        </div>
+    </div>
+
+    <script>
+        // Variável de controlo global para monitorizar a instância da janela GUI aberta
+        let guiJanelaAtiva = null;
+
+        // Suporte UTF-8 completo para Codificação Base64
+        function utf8_to_b64(str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        }
+
+        // Suporte UTF-8 completo para Descodificação Base64
+        function b64_to_utf8(str) {
+            return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        // 1. Transformar o Espírito/Programação em Código Base64 (Alma)
+        function processIncarnation() {
+            const spiritText = document.getElementById('spiritInput').value;
+            const statusLight = document.getElementById('statusLight');
+            const statusText = document.getElementById('statusText');
+            
+            if (!spiritText.trim()) {
+                alert('Insere texto ou programação no campo do Espírito para encarnar.');
+                return;
+            }
+
+            try {
+                const base64Result = utf8_to_b64(spiritText);
+                document.getElementById('soulOutput').value = base64Result;
+                
+                statusLight.style.backgroundColor = 'var(--soul-color)';
+                statusLight.style.boxShadow = '0 0 15px var(--soul-color)';
+                statusText.innerText = 'Estado Atual: Alma Encarnada em Base64';
+            } catch (error) {
+                alert('Erro na transmutação espiritual do código.');
+            }
+        }
+
+        // 2. Descodificar a Alma (Base64) e materializar na Janela GUI Externa
+        function processAscension() {
+            const soulText = document.getElementById('soulOutput').value;
+            const statusLight = document.getElementById('statusLight');
+            const statusText = document.getElementById('statusText');
+            const portalView = document.getElementById('guiPortalView');
+
+            if (!soulText.trim()) {
+                alert('Insere um código Base64 na Alma para iniciar a ascensão.');
+                return;
+            }
+
+            try {
+                const decodedResult = b64_to_utf8(soulText);
+                document.getElementById('spiritInput').value = decodedResult;
+                
+                // Se a janela GUI já estiver aberta, injeta o código diretamente nela
+                if (guiJanelaAtiva && !guiJanelaAtiva.closed) {
+                    guiJanelaAtiva.document.open();
+                    guiJanelaAtiva.document.write(decodedResult);
+                    guiJanelaAtiva.document.close();
+                    guiJanelaAtiva.focus();
+                } else {
+                    // Se não estiver aberta, cria uma janela GUI limpa com o código
+                    guiJanelaAtiva = window.open("", "JanelaRealGUI", "width=900,height=600,scrollbars=yes,resizable=yes");
+                    guiJanelaAtiva.document.open();
+                    guiJanelaAtiva.document.write(decodedResult);
+                    guiJanelaAtiva.document.close();
+                }
+
+                portalView.innerHTML = `<span class="gui-status-active">Código Base64 Materializado com Sucesso na Janela GUI Ativa.</span>`;
+
+                statusLight.style.backgroundColor = 'var(--reality-color)';
+                statusLight.style.boxShadow = '0 0 15px var(--reality-color)';
+                statusText.innerText = 'Estado Atual: Realidade Pura Manifestada na GUI';
+            } catch (error) {
+                alert('A alma fornecida está corrompida. Não foi possível alcançar a Realidade Pura.');
+            }
+        }
+
+        // Lógica Avançada: Abre uma Janela GUI Dedicada sem as restrições do Iframe ao carregar Enter
+        document.getElementById('parentLinkInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                
+                let linkPai = this.value.trim();
+                const statusDisplay = document.getElementById('parentStatusText');
+                const portalView = document.getElementById('guiPortalView');
+
+                if (!linkPai) {
+                    alert('Insira uma URL válida antes de pressionar Enter.');
+                    return;
+                }
+
+                if (!/^https?:\/\//i.test(linkPai)) {
+                    linkPai = 'https://' + linkPai;
+                    this.value = linkPai;
+                }
+
+                try {
+                    const urlValida = new URL(linkPai);
+                    
+                    // Configuração da Janela GUI Real: Remove barras desnecessárias se suportado pelo browser
+                    const especificacoesGUI = "width=1024,height=720,scrollbars=yes,status=yes,resizable=yes,location=yes";
+                    
+                    // Abre a Janela de forma nativa e limpa. Todos os links internos "a" vão funcionar nela sem bloqueios!
+                    guiJanelaAtiva = window.open(urlValida.href, "JanelaRealGUI", especificacoesGUI);
+                    
+                    if (!guiJanelaAtiva) {
+                        alert('Por favor, autorize a abertura de popups no seu navegador para abrir o Painel GUI.');
+                        return;
+                    }
+
+                    // Foca na nova janela GUI ativa
+                    guiJanelaAtiva.focus();
+
+                    statusDisplay.innerHTML = `Conectado ao plano pai: <strong style="color: var(--reality-color);">${urlValida.hostname}</strong>`;
+                    statusDisplay.style.color = 'var(--reality-color)';
+
+                    portalView.innerHTML = `
+                        <div style="color: var(--spirit-color);">
+                            <strong>Janela Real GUI Aberta Externamente</strong><br>
+                            <span style="font-size:0.85em; color:#8a8aae;">Alvo: ${urlValida.href}</span><br>
+                            <span style="font-size:0.8em; color:var(--reality-color); display:block; margin-top:5px;">● Todos os links e navegações estão operacionais e livres de restrições iframe.</span>
+                        </div>
+                    `;
+                    
+                } catch (err) {
+                    alert('URL inválida. Verifique o formato do link (Ex: https://site.com).');
+                }
+            }
+        });
+    </script>
+<h1 style="color:green;">Criar o link pai a partir do ficheiro <br>Nunca inserir o link pai no server<br>apenas o html e base64 <br>criar link e abrir no navegador normal</h1>
+<h3 style="color:red;">Link especial IA google MY<br><p><a href="https://www.google.com/search?q=cria+um+html+js+anjos+telepatia+e+karma+espirito&sca_esv=82d9c2a6357c8c74&source=hp&ei=yMayas7HIcbCnsEPhvrouA4&iflsig=ABILxe8AAAAAarLU2ABSW-TjzJHg3p5f6zMyR2sxOW3-&udm=50&ved=0ahUKEwjOy8bN5oKXAxVGoScCHQY9GucQ4dUDCBs&uact=5&oq=cria+um+html+js+anjos+telepatia+e+karma+espirito&gs_lp=Egdnd3Mtd2l6IjBjcmlhIHVtIGh0bWwganMgYW5qb3MgdGVsZXBhdGlhIGUga2FybWEgZXNwaXJpdG9IzPwBULIzWKXyAXAAeACQAQCYAfcBoAHFRqoBBzAuMzAuMTm4AQPIAQD4AQGYAgmgAogOqAIAwgIUEAAYgAQYigUYsQMYgwEYngYY8AXCAgoQABgDGJ4GGPAFwgIREAAYgAQYsQMYgwEYngYY8AXCAg4QABiABBixAxieBhjwBcICCxAAGIAEGJ4GGPAFwgIREAAYgAQYigUYkgMYngYY8AXCAg8QABiABBgKGAsYngYY8AWYA5sBkgcFMC40LjWgB_0csgcFMC40LjW4B4gOwgcJMC4yLjUuMC4yyAdFgAgB&sclient=gws-wiz&aep=107&cs=0&mstk=AUtExfDK_WI5J8OnYJ9D-nyAutkZ7pWTlWwCa-G_v4afJ89UFGpgsjv6WLbEjG4UOrxosEhR71H7JEdBXNh3hZ5ICeXin1ZySr4_6kT6tQh1Gag9cRT3PC_8QSsetv-uIo0k3L_wWSEGDwoUf1vOanPxs8dP8f4MjnnDdUM&csuir=1">My link IA google<br><img src="https://i.pinimg.com/474x/e8/ff/68/e8ff682d2fdc793ec6a7fdf686a6538a.jpg" width="300"><br>COPIAR LINK e colar no server base64 direto janela gui</a></p></h3>
+</body>
+</html>
