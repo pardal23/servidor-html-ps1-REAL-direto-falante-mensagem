@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrir Link Yandex</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        input { width: 80%; padding: 10px; margin-bottom: 10px; }
+        button { padding: 10px 20px; cursor: pointer; }
+        h1{color:red; text-align:center;}
+    </style>
+</head>
+<h1>Karma javascript substitui navegador REAL<br>abre ficheiros internos do servidor qualquer</h1>
+<body>
+
+    <h2>Navegador de Links</h2>
+    <!-- O input já vem preenchido com o URL solicitado -->
+    <input type="text" id="urlInput" value="https://yandex.ru/search/">
+    <br>
+    <button onclick="abrirLink()">Abrir Link</button>
+
+    <script>
+        function abrirLink() {
+            const url = document.getElementById('urlInput').value;
+            if (url) {
+                // Abre o link numa nova aba do navegador
+                window.open(url, '_blank');
+            } else {
+                alert('Por favor, insira um URL válido.');
+            }
+        }
+    </script>
+
+</body>
+</html>
